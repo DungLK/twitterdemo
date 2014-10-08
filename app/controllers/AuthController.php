@@ -18,7 +18,8 @@ class AuthController extends BaseController
     {
         
     }
-
+    public function test(){
+    }
     /**
      * Show signup form
      * GET /signup
@@ -27,7 +28,23 @@ class AuthController extends BaseController
     {
         return View::make('auth.signup');
     }
-
+    
+    /**
+     * Process signup form
+     * POST /signup
+     */
+    public function postSignup()
+    {
+    	if ($this->userForm->create(Input::all())) {
+    		return Redirect::route('auth.getSignup')
+    		->with('message', 'Successfully registered. Please check your email and activate your account.')
+    		->with('messageType', "success");
+    	}
+    
+    	return Redirect::route('auth.getSignup')
+    	->withInput()
+    	->withErrors($this->userForm->errors());
+    }
 
     /**
      * Show login form
@@ -44,17 +61,30 @@ class AuthController extends BaseController
     public function postLogin()
     {
     	$params = array(
-    			'email' => Input::get('email'),
-    			'password' => Input::get('password'),
-    			'active' => 1
-    	);
-    
-    	return var_dump($params);
-    	
-    	return Redirect::route('home');
-    
-    	return Redirect::route('auth.getLogin')
-    	->with('message', 'Wrong username or password');
+            'username' => Input::get('username'),
+            'password' => Input::get('password'),
+        );
+        
+    	$user = User::where(array('username'=>$params['username'],'password'=>$params['password'])) ->count();
+     if ($user >0) {
+            // if next is present, redirect to that url
+            $next = Input::get('next');
+            if ($next) return Redirect::to($next);
+            return Redirect::route('home');
+        }
+        return Redirect::route('auth.getLogin')
+            ->with('message', 'Wrong username or password');
     }
-
+    
+    /**
+     * Process logout
+     * GET /logout
+     */
+    public function getLogout()
+    {
+    	Auth::logout();
+    
+    	return Redirect::route('auth.getLogin');
+    }
+    
 }

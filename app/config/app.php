@@ -78,7 +78,7 @@ return array(
 	|
 	*/
 
-	'key' => 'YourSecretKey!!!',
+	'key' => '0YzWotdONub9DIYk7ankofpx7hzrQ0kf',
 
 	'cipher' => MCRYPT_RIJNDAEL_128,
 
@@ -122,6 +122,8 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 
+		//Degine service provice
+		'LaraTwitter\Repo\RepoServiceProvider',
 	),
 
 	/*
